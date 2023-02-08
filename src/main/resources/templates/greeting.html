@@ -1,0 +1,11 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Diktāta rezultāti</title>
+        <script type="text/javascript" th:src="@{/js/src/visualizer.bundle.js}" charset="UTF-8"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    </head>
+    <body th:data-id = "${name}" th:onload="visualizer.renderCorrect([[${name}]],[[${obj}]])">
+        <div id="containerId" style="width: 50%; height: 90%; top:10%;"></div>
+    </body>
+</html>
