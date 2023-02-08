@@ -6,31 +6,41 @@ import org.json.simple.parser.ParseException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 
 @Service("resultService")
 @Primary
 public class ResultService {
 
-    public Object extractObjectFromJson(String id) {
+    public Object extractObjectFromJson(String id) throws IOException, ParseException {
 
         JSONParser jsonParser = new JSONParser();
 
-        try (Reader reader = new FileReader("src/main/resources/static/js/src/VisData.json")){
+        String path = "static/js/src/VisData.json";
 
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+        InputStream is = getFileFromResourceAsStream(path);
 
-            JSONObject object = (JSONObject) jsonObject.get(id);
+        Reader reader = new InputStreamReader(is);
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 
-            JSONObject data = (JSONObject) object.get("data");
+        JSONObject object = (JSONObject) jsonObject.get(id);
 
-            return data;
+        return object.get("data");
 
-        } catch (IOException | ParseException e) {
-            throw new RuntimeException(e);
+    }
+
+
+    private InputStream getFileFromResourceAsStream(String fileName) {
+
+        // The class loader that loaded the class
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        // the stream holding the file content
+        if (inputStream == null) {
+            throw new IllegalArgumentException("file not found! " + fileName);
+        } else {
+            return inputStream;
         }
 
     }
